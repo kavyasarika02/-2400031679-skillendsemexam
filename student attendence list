@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -182,3 +183,189 @@
 
 </body>
 </html>
+=======
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Student Attendance Tracker</title>
+
+    <!-- React + ReactDOM + Babel (for JSX inside HTML) -->
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f5f6fa;
+            padding: 20px;
+        }
+        h2 {
+            text-align: center;
+        }
+        .student-card {
+            display: flex;
+            justify-content: space-between;
+            background: #fff;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        button {
+            padding: 8px 12px;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .present-btn { background: #2ecc71; color: white; }
+        .absent-btn { background: #e74c3c; color: white; }
+        .reset-btn { background: #333; color: white; margin-bottom: 20px; padding: 10px 16px; }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            margin-top: 25px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        }
+        th, td {
+            padding: 12px;
+            border: 1px solid #ddd;
+        }
+    </style>
+</head>
+
+<body>
+    <h2>Student Attendance Tracker</h2>
+
+    <div id="root"></div>
+
+    <script type="text/babel">
+
+        // ---------------- Reducer ----------------
+        function attendanceReducer(state, action) {
+            switch (action.type) {
+                case "MARK_PRESENT":
+                    return state.map(student =>
+                        student.id === action.payload
+                            ? { ...student, status: "Present" }
+                            : student
+                    );
+                case "MARK_ABSENT":
+                    return state.map(student =>
+                        student.id === action.payload
+                            ? { ...student, status: "Absent" }
+                            : student
+                    );
+                case "RESET":
+                    return state.map(student => ({ ...student, status: "Not Marked" }));
+
+                default:
+                    return state;
+            }
+        }
+
+        // -------- Initial List of Students --------
+        const initialStudents = [
+            { id: 1, name: "Rahul", status: "Not Marked" },
+            { id: 2, name: "Priya", status: "Not Marked" },
+            { id: 3, name: "Kavya", status: "Not Marked" },
+            { id: 4, name: "Arjun", status: "Not Marked" }
+        ];
+
+        // -------- Main Component --------
+        function App() {
+            const [students, dispatch] = React.useReducer(attendanceReducer, initialStudents);
+
+            return (
+                <div style={{ maxWidth: "600px", margin: "auto" }}>
+                    <button className="reset-btn" onClick={() => dispatch({ type: "RESET" })}>
+                        Reset Attendance
+                    </button>
+
+                    {students.map(student => (
+                        <div className="student-card" key={student.id}>
+                            <div>
+                                <strong>{student.name}</strong>
+                                <p style={{
+                                    margin: 0,
+                                    color:
+                                        student.status === "Present"
+                                            ? "green"
+                                            : student.status === "Absent"
+                                                ? "red"
+                                                : "gray"
+                                }}>
+                                    {student.status}
+                                </p>
+                            </div>
+
+                            <div>
+                                <button
+                                    className="present-btn"
+                                    onClick={() => dispatch({ type: "MARK_PRESENT", payload: student.id })}
+                                >
+                                    Present
+                                </button>
+
+                                <button
+                                    className="absent-btn"
+                                    onClick={() => dispatch({ type: "MARK_ABSENT", payload: student.id })}
+                                    style={{ marginLeft: "10px" }}
+                                >
+                                    Absent
+                                </button>
+                            </div>
+                        </div>
+                    ))}
+
+                    {/* Final Attendance Table */}
+                    <h3>Final Attendance List</h3>
+
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Student Name</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            {students.map(s => (
+                                <tr key={s.id}>
+                                    <td>{s.id}</td>
+                                    <td>{s.name}</td>
+                                    <td style={{
+                                        color:
+                                            s.status === "Present"
+                                                ? "green"
+                                                : s.status === "Absent"
+                                                    ? "red"
+                                                    : "gray",
+                                        fontWeight: "bold"
+                                    }}>
+                                        {s.status}
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+
+                </div>
+            );
+        }
+
+        // Render App
+        ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+
+    </script>
+
+</body>
+</html>
+>>>>>>> 5a33401e124d4ed84cdae0b0dfed881209b899b9
