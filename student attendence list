@@ -1,158 +1,184 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <title>Attendance Tracker — Project Page</title>
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <style>
-    body { font-family: Arial, sans-serif; line-height: 1.6; max-width: 980px; margin: 24px auto; padding: 0 18px; color: #222; }
-    header { text-align: center; margin-bottom: 18px; }
-    pre { background:#f6f8fa; padding:12px; border-radius:6px; overflow:auto; }
-    .card { background: #fff; border-radius:8px; padding:14px; box-shadow:0 2px 8px rgba(0,0,0,0.06); margin-bottom:12px; }
-    h1,h2,h3 { margin: 6px 0 12px; }
-    code { font-family: monospace; background:#eef; padding:2px 4px; border-radius:4px; }
-    table { width:100%; border-collapse:collapse; margin-top:8px; }
-    th,td { border:1px solid #e0e0e0; padding:8px; text-align:left; }
-    .muted { color:#666; font-size:0.95em; }
-    .actions { font-size:0.95em; margin-top:8px; }
-    a.btn { display:inline-block; padding:8px 12px; background:#0366d6; color:#fff; border-radius:6px; text-decoration:none; }
-  </style>
+    <meta charset="UTF-8" />
+    <title>Student Attendance Tracker</title>
+
+    <!-- React + ReactDOM + Babel (for JSX inside HTML) -->
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f5f6fa;
+            padding: 20px;
+        }
+        h2 {
+            text-align: center;
+        }
+        .student-card {
+            display: flex;
+            justify-content: space-between;
+            background: #fff;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        button {
+            padding: 8px 12px;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .present-btn { background: #2ecc71; color: white; }
+        .absent-btn { background: #e74c3c; color: white; }
+        .reset-btn { background: #333; color: white; margin-bottom: 20px; padding: 10px 16px; }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            margin-top: 25px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        }
+        th, td {
+            padding: 12px;
+            border: 1px solid #ddd;
+        }
+    </style>
 </head>
+
 <body>
-  <header>
-    <h1>Student Attendance Tracker — Project</h1>
-    <p class="muted">Includes a React <code>useReducer</code> implementation, UI cards, and a final attendance table — with reducer actions <code>MARK_PRESENT</code>, <code>MARK_ABSENT</code>, and <code>RESET</code>.</p>
-  </header>
+    <h2>Student Attendance Tracker</h2>
 
-  <section class="card">
-    <h2>Project Brief / Question</h2>
-    <p>Build a student attendance tracker for a student portal that:</p>
-    <ul>
-      <li>Displays a list of students with buttons to mark <strong>Present</strong> or <strong>Absent</strong>.</li>
-      <li>Uses React <code>useReducer</code> with actions: <code>MARK_PRESENT</code>, <code>MARK_ABSENT</code>, and <code>RESET</code>.</li>
-      <li>Shows a final attendance list in a table format below the interactive list.</li>
-      <li>State should be cleanly managed in the reducer and the UI should update instantly.</li>
-    </ul>
-  </section>
+    <div id="root"></div>
 
-  <section class="card">
-    <h2>React Code (App.js)</h2>
-    <p class="muted">Copy this into your React app (e.g., <code>src/App.js</code>) — this is the full component implementation used in the project.</p>
-    <pre><code>// App.js
-import React, { useReducer } from "react";
+    <script type="text/babel">
 
-// Reducer
-const attendanceReducer = (state, action) => {
-  switch (action.type) {
-    case "MARK_PRESENT":
-      return state.map(student =>
-        student.id === action.payload ? { ...student, status: "Present" } : student
-      );
-    case "MARK_ABSENT":
-      return state.map(student =>
-        student.id === action.payload ? { ...student, status: "Absent" } : student
-      );
-    case "RESET":
-      return state.map(student => ({ ...student, status: "Not Marked" }));
-    default:
-      return state;
-  }
-};
+        // ---------------- Reducer ----------------
+        function attendanceReducer(state, action) {
+            switch (action.type) {
+                case "MARK_PRESENT":
+                    return state.map(student =>
+                        student.id === action.payload
+                            ? { ...student, status: "Present" }
+                            : student
+                    );
+                case "MARK_ABSENT":
+                    return state.map(student =>
+                        student.id === action.payload
+                            ? { ...student, status: "Absent" }
+                            : student
+                    );
+                case "RESET":
+                    return state.map(student => ({ ...student, status: "Not Marked" }));
 
-// Initial students
-const initialStudents = [
-  { id: 1, name: "Rahul", status: "Not Marked" },
-  { id: 2, name: "Priya", status: "Not Marked" },
-  { id: 3, name: "Kavya", status: "Not Marked" },
-  { id: 4, name: "Arjun", status: "Not Marked" }
-];
+                default:
+                    return state;
+            }
+        }
 
-export default function App() {
-  const [students, dispatch] = useReducer(attendanceReducer, initialStudents);
+        // -------- Initial List of Students --------
+        const initialStudents = [
+            { id: 1, name: "Rahul", status: "Not Marked" },
+            { id: 2, name: "Priya", status: "Not Marked" },
+            { id: 3, name: "Kavya", status: "Not Marked" },
+            { id: 4, name: "Arjun", status: "Not Marked" }
+        ];
 
-  return (
-    &lt;div style={{ maxWidth: 720, margin: '24px auto', fontFamily: 'Arial' }}&gt;
-      &lt;h2&gt;Student Attendance Tracker&lt;/h2&gt;
+        // -------- Main Component --------
+        function App() {
+            const [students, dispatch] = React.useReducer(attendanceReducer, initialStudents);
 
-      &lt;button onClick={() =&gt; dispatch({ type: "RESET" })}&gt;Reset Attendance&lt;/button&gt;
+            return (
+                <div style={{ maxWidth: "600px", margin: "auto" }}>
+                    <button className="reset-btn" onClick={() => dispatch({ type: "RESET" })}>
+                        Reset Attendance
+                    </button>
 
-      {students.map(student =&gt; (
-        &lt;div key={student.id} style={{ display:'flex', justifyContent:'space-between', padding:12, marginTop:10, background:'#fff', borderRadius:8 }}&gt;
-          &lt;div&gt;
-            &lt;strong&gt;{student.name}&lt;/strong&gt;
-            &lt;p style={{ margin:0, color: student.status === 'Present' ? 'green' : student.status === 'Absent' ? 'red' : '#666' }}&gt;{student.status}&lt;/p&gt;
-          &lt;/div&gt;
+                    {students.map(student => (
+                        <div className="student-card" key={student.id}>
+                            <div>
+                                <strong>{student.name}</strong>
+                                <p style={{
+                                    margin: 0,
+                                    color:
+                                        student.status === "Present"
+                                            ? "green"
+                                            : student.status === "Absent"
+                                                ? "red"
+                                                : "gray"
+                                }}>
+                                    {student.status}
+                                </p>
+                            </div>
 
-          &lt;div&gt;
-            &lt;button onClick={() =&gt; dispatch({ type: 'MARK_PRESENT', payload: student.id })}&gt;Present&lt;/button&gt;
-            &lt;button onClick={() =&gt; dispatch({ type: 'MARK_ABSENT', payload: student.id })} style={{ marginLeft:8 }}&gt;Absent&lt;/button&gt;
-          &lt;/div&gt;
-        &lt;/div&gt;
-      ))}
+                            <div>
+                                <button
+                                    className="present-btn"
+                                    onClick={() => dispatch({ type: "MARK_PRESENT", payload: student.id })}
+                                >
+                                    Present
+                                </button>
 
-      &lt;h3 style={{ marginTop:24 }}&gt;Final Attendance List&lt;/h3&gt;
-      &lt;table&gt;
-        &lt;thead&gt;
-          &lt;tr&gt;&lt;th&gt;ID&lt;/th&gt;&lt;th&gt;Student Name&lt;/th&gt;&lt;th&gt;Status&lt;/th&gt;&lt;/tr&gt;
-        &lt;/thead&gt;
-        &lt;tbody&gt;
-          {students.map(s =&gt; (
-            &lt;tr key={s.id}&gt;
-              &lt;td&gt;{s.id}&lt;/td&gt;
-              &lt;td&gt;{s.name}&lt;/td&gt;
-              &lt;td style={{ color: s.status === 'Present' ? 'green' : s.status === 'Absent' ? 'red' : '#666', fontWeight:'600' }}&gt;{s.status}&lt;/td&gt;
-            &lt;/tr&gt;
-          ))}
-        &lt;/tbody&gt;
-      &lt;/table&gt;
-    &lt;/div&gt;
-  );
-}
-    </code></pre>
-  </section>
+                                <button
+                                    className="absent-btn"
+                                    onClick={() => dispatch({ type: "MARK_ABSENT", payload: student.id })}
+                                    style={{ marginLeft: "10px" }}
+                                >
+                                    Absent
+                                </button>
+                            </div>
+                        </div>
+                    ))}
 
-  <section class="card">
-    <h2>Analysis Summary</h2>
-    <p class="muted">Short notes to include in your repo README or to discuss in viva:</p>
-    <ul>
-      <li><strong>State management:</strong> Centralized in <code>useReducer</code> — actions are predictable and single-responsibility.</li>
-      <li><strong>Actions:</strong> <code>MARK_PRESENT</code> &amp; <code>MARK_ABSENT</code> modify one student; <code>RESET</code> restores default for all.</li>
-      <li><strong>UI Synchronicity:</strong> Both the interactive cards and the final table read from the same state array so they stay in sync.</li>
-      <li><strong>Why useReducer:</strong> Cleaner action-based updates for multiple related state transitions vs. many useState hooks.</li>
-    </ul>
-  </section>
+                    {/* Final Attendance Table */}
+                    <h3>Final Attendance List</h3>
 
-  <section class="card">
-    <h2>How to publish on GitHub (commands)</h2>
-    <p class="muted">Run these commands in your project folder. Replace <code>USERNAME</code> and <code>REPO_NAME</code> as needed.</p>
-    <pre><code># 1. Initialize local repo (if not already)
-git init
-git add index.html
-git add -A
-git commit -m "Initial commit — attendance tracker page"
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Student Name</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
 
-# 2. Create remote repo on GitHub (create via GitHub UI or use gh CLI)
-# Example remote URL (HTTPS)
-git remote add origin https://github.com/USERNAME/attendance-portal.git
+                        <tbody>
+                            {students.map(s => (
+                                <tr key={s.id}>
+                                    <td>{s.id}</td>
+                                    <td>{s.name}</td>
+                                    <td style={{
+                                        color:
+                                            s.status === "Present"
+                                                ? "green"
+                                                : s.status === "Absent"
+                                                    ? "red"
+                                                    : "gray",
+                                        fontWeight: "bold"
+                                    }}>
+                                        {s.status}
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
 
-# 3. Push to GitHub (main branch)
-git branch -M main
-git push -u origin main
-    </code></pre>
+                </div>
+            );
+        }
 
-    <p class="muted">If you prefer SSH replace the remote URL with:</p>
-    <pre><code>git remote add origin git@github.com:USERNAME/attendance-portal.git</code></pre>
-  </section>
+        // Render App
+        ReactDOM.createRoot(document.getElementById("root")).render(<App />);
 
-  <section class="card">
-    <h2>Example final repository URL</h2>
-    <p>After pushing, your GitHub repo link will look like:</p>
-    <p><a href="https://github.com/USERNAME/attendance-portal" target="_blank">https://github.com/USERNAME/attendance-portal</a></p>
-    <p class="muted">Share that URL with your instructor or add it to your submission.</p>
-  </section>
+    </script>
 
-  <footer style="text-align:center; margin-top:18px;">
-    <p class="muted">If you want, I can also generate a ready-made <code>README.md</code> and a ZIP of the project files you can download.</p>
-  </footer>
 </body>
 </html>
